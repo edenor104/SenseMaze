@@ -1,0 +1,6 @@
+﻿D:\Eden\Unity\VR Course\AudioNavigation\AudioNavigation\AudioNavigation.vcxproj : error  : Cannot load project: project does not contain requested configuration Debug|Any CPU. Please verify that .sln file is valid and uses only existing project configurations.
+
+
+D:\Eden\Unity\VR Course\AudioNavigation\UnityPlayerStub\UnityPlayerStub.vcxproj : error  : Cannot load project: project does not contain requested configuration Debug|Any CPU. Please verify that .sln file is valid and uses only existing project configurations.
+
+
