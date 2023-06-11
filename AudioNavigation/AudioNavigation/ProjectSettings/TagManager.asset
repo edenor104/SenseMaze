@@ -16,6 +16,8 @@ TagManager:
   - GameManager
   - StartingPoint
   - PauseMenu
+  - AudioGoal
+  - OuterWall
   layers:
   - Default
   - TransparentFX

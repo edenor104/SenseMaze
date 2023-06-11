@@ -8,7 +8,7 @@ public class MazeManager : MonoBehaviour
     public Camera mainCamera; // Drag the main camera object into this field in the inspector
     //public AudioListener listenerObject;
     public GameObject ObscureObj;
-
+    public GameObject player;
 
 
     public void ActivateMaze(string curr_maze_name)
@@ -55,7 +55,7 @@ public class MazeManager : MonoBehaviour
 
         void ApplyAudioOnly(string maze_name)
         {
-            
+            AudioSource audioSource3 = player.GetComponent<AudioSource>();
             // Condition 1 - Audio Only
             // Make contra visual walls are off
             Transform maze_transform = GameObject.Find(maze_name).transform;
@@ -97,7 +97,8 @@ public class MazeManager : MonoBehaviour
             // Make sure Obstruction of view is on -NO VISION
             ObscureObj.SetActive(true);
             // Make sure listener is ON
-            AudioListener.volume = 1f;
+            audioSource3.volume = 0.5f;
+            //AudioListener.volume = 1f;
 
         }
 
@@ -105,6 +106,7 @@ public class MazeManager : MonoBehaviour
         {
             // Condition 2 - Visual Only
             // Make contra visual walls are off
+            AudioSource audioSource3 = player.GetComponent<AudioSource>();
             Transform maze_transform = GameObject.Find(maze_name).transform;
             Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
             Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
@@ -142,18 +144,21 @@ public class MazeManager : MonoBehaviour
             // Make sure Obstruction of view is off
             ObscureObj.SetActive(false);
             // Make sure listener is off - NO SOUND
-            AudioListener.volume = 0f;
+            audioSource3.volume = 0f;
+            //AudioListener.volume = 0f;
             print("visual");
 
         }
 
         void ApplyContraVisual(string maze_name)
         {
+            AudioSource audioSource3 = player.GetComponent<AudioSource>();
             // Apply condition 3 - contra visual - visual is false, needs to count on Audio
             // Make sure Obstruction of view is off
             ObscureObj.SetActive(false);
             // Make sure listener is on
-            AudioListener.volume = 1f;
+            audioSource3.volume = 0.5f;
+            //AudioListener.volume = 1f;
             // Make sure contra visual walls are ON
             Transform maze_transform = GameObject.Find(maze_name).transform;
             Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
@@ -205,9 +210,11 @@ public class MazeManager : MonoBehaviour
 
         void ApplyContraAudio(string maze_name)
         {
+            AudioSource audioSource3 = player.GetComponent<AudioSource>();    
             // Apply condition 4 to the maze objects
             ObscureObj.SetActive(false);
-            AudioListener.volume = 1f;
+            audioSource3.volume = 0.5f;
+            //AudioListener.volume = 1f;
             print("contra_audio");            
             // Make sure ghost walls are off
             Transform maze_transform = GameObject.Find(maze_name).transform;
@@ -246,6 +253,7 @@ public class MazeManager : MonoBehaviour
             
         void ApplyVisualAudio(string maze_name)
         {
+            AudioSource audioSource3 = player.GetComponent<AudioSource>();   
             // Condition 2 - Visual Only
             // Make contra visual walls are off
             Transform maze_transform = GameObject.Find(maze_name).transform;
@@ -285,7 +293,8 @@ public class MazeManager : MonoBehaviour
             // Make sure Obstruction of view is off
             ObscureObj.SetActive(false);
             // Make sure listener is ON
-            AudioListener.volume = 1f;
+            audioSource3.volume = 0.5f;
+            //AudioListener.volume = 1f;
             print("all");
 
         }

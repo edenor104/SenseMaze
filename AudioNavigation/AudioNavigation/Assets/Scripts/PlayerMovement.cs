@@ -114,26 +114,28 @@ public class PlayerMovement : MonoBehaviour
 
         //AudioClip[] audioClips1 = mm.audioClips;
 
-            if (other.gameObject.CompareTag("Finish"))
-            {
-
-                if (mazeIndex == 16) 
-                {
-                    Application.Quit();
-                }
-
+            if (other.gameObject.CompareTag("Finish")){
+            GameObject finishObject = GameObject.FindGameObjectWithTag("Finish");
+            AudioSource finishSound = finishObject.GetComponentInChildren<AudioSource>();
+            /*float startVolume = finishSound.volume;
+		    while (finishSound.volume > 0) {
+			finishSound.volume -= startVolume * Time.deltaTime;
+		    }*/
+		    finishSound.Stop();
+            
 
                 if(MainMenu.isTraining)
                 {
-                    print("trainig: " +MainMenu.isTraining);
                     //ts.NextMaze();
                     SuccessSound.Play();
+                    //finishSound.volume = startVolume;
                     pm.NextLevelScreen();
                 }
                 else
                 {
                     ls.ReachLocation(MazeType, ConditionType, collision_number, MazeSolveTime);
                     SuccessSound.Play();
+                    //finishSound.volume = startVolume;
                     pm.NextLevelScreen();
                     //gms.NextMaze();
                 }

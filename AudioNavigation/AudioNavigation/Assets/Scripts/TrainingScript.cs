@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.SceneManagement;
+
 
 public class TrainingScript : MonoBehaviour
 {
@@ -71,6 +73,7 @@ public class TrainingScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        mazeIndex = -1;
         //gameObject.layer uses only integers, but we can turn a layer name into a layer integer using LayerMask.NameToLayer()
         int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
         Goal.layer = LayerIgnoreRaycast;
@@ -129,13 +132,19 @@ public class TrainingScript : MonoBehaviour
 
     public void NextMaze()
     {
+
         AudioSource NextLevelSound = GameObject.FindWithTag("Floor").GetComponent<AudioSource>();
         Transform targetTransform = player.GetComponent<Transform>();
         CharacterController controller_player = player.GetComponent<CharacterController>();
 
         string[] mazes_names = new string[] {"Training","Training", "Training", "Training",
         "Training"};
-        mazeIndex = (mazeIndex + 1) % 3;
+        mazeIndex = (mazeIndex + 1);
+        if((mazeIndex) == 3)
+        {
+        SceneManager.LoadScene("MainMenu");
+        return;
+        }
         print(mazeIndex);
         print(mazes_names[mazeIndex]);
         PlayerMovement.collision_number = 0;

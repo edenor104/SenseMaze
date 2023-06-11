@@ -26,6 +26,7 @@ public class GameManagerScript : MonoBehaviour
     public List<Transform> all_mazes;
     public GameObject Goal;
     public static int mazeIndex = -1;
+    public static int count = 0;
     private string temp_str;
     private Transform temp_trans;
     private AudioSource audioSource; // the audio source component attached to this game object
@@ -45,10 +46,10 @@ public class GameManagerScript : MonoBehaviour
     public GameObject player; // the player game object
     // audio clips to play for raycasting sounds
     public AudioClip[] audioClips;
-    private static Vector3 maze1_intial_location = new Vector3(0.62f, 0.132f, 0.83f);
-    private static Vector3 maze2_intial_location = new Vector3(0.62f, 0.132f, 0.83f);
-    private static Vector3 maze3_intial_location = new Vector3(0.62f, 0.132f, 0.83f);
-    private static Vector3 maze4_intial_location = new Vector3(0.62f, 0.132f, -1.24f); 
+    private static Vector3 maze1_intial_location = new Vector3(0.62f, 0.219f, -1.23f);
+    private static Vector3 maze2_intial_location = new Vector3(0.62f, 0.219f, 0.83f);
+    private static Vector3 maze3_intial_location = new Vector3(0.62f, 0.219f, 0.83f);
+    private static Vector3 maze4_intial_location = new Vector3(-0.59f, 0.219f, 0.86f); 
     public  static Vector3[] initial_position = {
         maze1_intial_location,
         maze2_intial_location,
@@ -159,6 +160,12 @@ public class GameManagerScript : MonoBehaviour
         "Maze2", "Maze4", "Maze3", "Maze1",
         "Maze4", "Maze3", "Maze2", "Maze1" };
         mazeIndex = (mazeIndex + 1) % 16;
+        count = count + 1;
+        if (count == 17) 
+            {
+            Application.Quit();
+            return;
+            }
         print("c" + mazeIndex);
         print(mazes_names[mazeIndex]);
         PlayerMovement.collision_number = 0;

@@ -5,12 +5,14 @@ using UnityEngine;
 public class DistancePitchRaycast : MonoBehaviour
 {
     public float minDistance = 3.0f; // the distance at which the audio pitch will change
-    public float triggerColision = 0.09f; // the distance at which the audio pitch will change
+    public float triggerColision = 0.002f; // the distance at which the audio pitch will change
     public float minPitch = 1.0f; // the minimum audio pitch
     public float maxPitch = 2.0f; // the maximum audio pitch
 
     private AudioSource audioSource; // the audio source component attached to this game object
-    private AudioSource audioSource2; // the audio source component attached to this game object
+    private AudioSource audioSource2; // the audio source component  for game mode
+    private AudioSource audioSource3; // the audio source component for training mode
+
     private RaycastHit hit; // the raycast hit info
     private PauseMenu pauseMenu;
 
@@ -35,7 +37,26 @@ public class DistancePitchRaycast : MonoBehaviour
             audioSource.volume = 0.0f;
             return; // Skip the rest of the code in the Update function
         }
-        // shoot a raycast from the player in the forward direction
+        
+        if(MainMenu.isTraining)
+        {
+            int index = (TrainingScript.mazeIndex % 3);
+        if (TrainingScript.conditions[index] == "visual_only")
+            {
+            audioSource.volume = 0.0f;
+            if ((hit.distance < triggerColision))
+                {
+                    if (!audioSource2.isPlaying)
+                    {
+                        audioSource2.Play();
+                    }
+                }
+            Physics.Raycast(transform.position, transform.forward, out hit);
+            return; // Skip the rest of the code in the Update function
+
+            }
+
+                    // shoot a raycast from the player in the forward direction
         if (Physics.Raycast(transform.position, transform.forward, out hit))
         {
             audioSource.volume = 0.5f;
@@ -43,7 +64,7 @@ public class DistancePitchRaycast : MonoBehaviour
             // calculate the pitch based on the distance to the hit object
             if (hit.distance < minDistance)
             {
-                if (hit.distance < triggerColision)
+                if ((hit.distance < triggerColision))
                 {
                     if (!audioSource2.isPlaying)
                     {
@@ -58,6 +79,52 @@ public class DistancePitchRaycast : MonoBehaviour
                 audioSource.volume = 0.0f;
             }
         }
+
+        }
+        else{
+        if (GameManagerScript.conditions[GameManagerScript.mazeIndex] == "visual_only")
+            {
+            audioSource.volume = 0.0f;
+            if ((hit.distance < triggerColision))
+                {
+                    print(GameManagerScript.mazeIndex);
+                    if (!audioSource2.isPlaying)
+                    {
+                        audioSource2.Play();
+                    }
+                }
+            Physics.Raycast(transform.position, transform.forward, out hit);
+            return; // Skip the rest of the code in the Update function
+
+            }
+
+                    // shoot a raycast from the player in the forward direction
+        if (Physics.Raycast(transform.position, transform.forward, out hit))
+        {
+            audioSource.volume = 0.5f;
+            //print(hit.distance);
+            // calculate the pitch based on the distance to the hit object
+            if (hit.distance < minDistance)
+            {
+                if ((hit.distance < triggerColision))
+                {
+                    if (!audioSource2.isPlaying)
+                    {
+                        audioSource2.Play();
+                    }
+                }
+                float pitch = maxPitch * ((minDistance - Mathf.Abs(hit.distance)) / minDistance) + 1;
+                // set the audio source pitch
+                audioSource.pitch = pitch;
+            }
+            else {
+                audioSource.volume = 0.0f;
+            }
+        }
+        }
+        
+
+
 
     }
 }
