@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using TMPro;
+
 
 
 public class GameManagerScript : MonoBehaviour
@@ -30,6 +32,8 @@ public class GameManagerScript : MonoBehaviour
     private string temp_str;
     private Transform temp_trans;
     private AudioSource audioSource; // the audio source component attached to this game object
+    public TextMeshProUGUI textMeshPro;
+
 
 
 
@@ -38,11 +42,13 @@ public class GameManagerScript : MonoBehaviour
     public static string[] mazes_name_list =  new string[]  {"Maze1", "Maze2", "Maze3", "Maze4",
     "Maze3", "Maze4", "Maze2", "Maze1",
     "Maze2", "Maze4", "Maze3", "Maze1",
-     "Maze4", "Maze3", "Maze2", "Maze1" } ;
-    public static string[] conditions = new string[] {"contra_audio", "visual_only", "contra_audio", "audio_only",
+     "Maze4", "Maze3", "Maze2", "Maze1",
+     "Maze2", "Maze1", "Maze3", "Maze4" } ;
+    public static string[] conditions = new string[] {"invisible", "visual_only", "contra_audio", "audio_only",
      "visual_only", "contra_visual", "contra_audio", "audio_only",
-      "contra_visual", "visual_only", "audio_only", "contra_visual",
-       "contra_audio", "contra_visual", "audio_only","visual_only"};
+      "contra_visual", "visual_only", "invisible", "contra_visual",
+       "contra_audio", "contra_visual", "audio_only","visual_only",
+       "invisible","contra_audio", "audio_only", "invisible"};
     public GameObject player; // the player game object
     // audio clips to play for raycasting sounds
     public AudioClip[] audioClips;
@@ -67,6 +73,10 @@ public class GameManagerScript : MonoBehaviour
         maze3_intial_location,
         maze2_intial_location,
         maze1_intial_location,
+        maze2_intial_location,
+        maze1_intial_location,
+        maze3_intial_location,
+        maze4_intial_location,
     };
     // AudioSource NextLevelSound = GameObject.FindWithTag("Floor").GetComponent<AudioSource>();
    // AudioSource audioSource = GameManager.GetComponent<AudioSource>();
@@ -155,30 +165,84 @@ public class GameManagerScript : MonoBehaviour
         AudioSource NextLevelSound = GameObject.FindWithTag("Floor").GetComponent<AudioSource>();
         Transform targetTransform = player.GetComponent<Transform>();
         CharacterController controller_player = player.GetComponent<CharacterController>();
-        string[] mazes_names = new string[] {"Maze1","Maze2", "Maze3", "Maze4",
+        foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
+            {
+                if (obj.CompareTag("InvisiWall") || obj.CompareTag("GhostSoundWall") || obj.CompareTag("StartingPoint") )
+                {
+                continue;
+                }
+
+                MeshRenderer meshRenderer = obj.GetComponent<MeshRenderer>();
+                if (meshRenderer != null){
+                    meshRenderer.enabled = true;
+                }
+            }
+
+        string[] mazes_names = new string[]  {"Maze1", "Maze2", "Maze3", "Maze4",
         "Maze3", "Maze4", "Maze2", "Maze1",
         "Maze2", "Maze4", "Maze3", "Maze1",
-        "Maze4", "Maze3", "Maze2", "Maze1" };
-        mazeIndex = (mazeIndex + 1) % 16;
+        "Maze4", "Maze3", "Maze2", "Maze1",
+        "Maze2", "Maze1", "Maze3", "Maze4" } ;
+        // change next screen title according to a condition
+        mazeIndex = (mazeIndex + 1) % 20;
         count = count + 1;
-        if (count == 17) 
+        if (count == 21) 
             {
             Application.Quit();
             return;
             }
-        print("c" + mazeIndex);
+                print("Count: " + count);
+        print(conditions[mazeIndex]);
+        if (textMeshPro != null)
+        {
+            if ((mazeIndex +1) == 20)
+            {
+
+            }    
+               
+            else
+            {
+                switch (conditions[mazeIndex + 1])
+                {
+                    case "audio_only" when true:
+                    textMeshPro.text = "Next Maze: Only Audio";
+                        break;
+                    case "visual_only" when true:
+                    textMeshPro.text = "Next Maze: Only Visual";
+                        break;
+                    case "contra_visual" when true:
+                    textMeshPro.text = "Trust Audio, Visual Could Be Misleading";
+                        break;
+                    case "contra_audio" when true:
+                    textMeshPro.text = "Trust Visual, Audio Could Be Misleading";
+                        break;
+                    case "all" when true:
+                    textMeshPro.text = "Trust Visual and Audio";
+                        break;
+                    case "invisible" when true:
+                    textMeshPro.text = "Trust Audio, Visual Could Be Misleading";
+                        break;
+                }
+            }
+        }
+        print("Index Maze after Addition:" + mazeIndex);
         print(mazes_names[mazeIndex]);
         PlayerMovement.collision_number = 0;
         PlayerMovement.StartingTimeMaze = Time.time;
         NextLevelSound.Play();
         // activate random condition
-        print(conditions);
-        print("B" + initial_position[mazeIndex]);
+        //print(conditions);
         controller_player.enabled = false;
         targetTransform.position = initial_position[mazeIndex];
-        targetTransform.rotation =  Quaternion.Euler(0f, -90f, 0f);
+        if(mazes_names[mazeIndex] == "Maze4")
+        {
+            targetTransform.rotation =  Quaternion.Euler(0f, 180f, 0f);
+        }
+        else
+        {
+            targetTransform.rotation =  Quaternion.Euler(0f, -90f, 0f);
+        }
         controller_player.enabled = true;
-        print("A" + targetTransform.position);
         //print(mazes_name_list);
         mm.ActivateMaze(mazes_names[mazeIndex]);
         mm.ActivateCondition(conditions[mazeIndex], mazes_names[mazeIndex]);

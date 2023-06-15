@@ -9,6 +9,8 @@ public class MazeManager : MonoBehaviour
     //public AudioListener listenerObject;
     public GameObject ObscureObj;
     public GameObject player;
+    private string activeTag = "OuterWall"; 
+
 
 
     public void ActivateMaze(string curr_maze_name)
@@ -49,255 +51,317 @@ public class MazeManager : MonoBehaviour
             case "all" when true:
                 ApplyVisualAudio(maze_name);
                 break;
+            case "invisible" when true:
+                ApplyInvisible(maze_name);
+                break;
         }
     }
     
 
-        void ApplyAudioOnly(string maze_name)
+    void ApplyAudioOnly(string maze_name)
+    {
+        AudioSource audioSource3 = player.GetComponent<AudioSource>();
+        // Condition 1 - Audio Only
+        // Make contra visual walls are off
+        Transform maze_transform = GameObject.Find(maze_name).transform;
+        Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
+        Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
+        if (invisi_wall != null)
         {
-            AudioSource audioSource3 = player.GetComponent<AudioSource>();
-            // Condition 1 - Audio Only
-            // Make contra visual walls are off
-            Transform maze_transform = GameObject.Find(maze_name).transform;
-            Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
-            Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
-            if (invisi_wall != null)
-            {
-                invisi_wall.gameObject.SetActive(false);
-            }
-
-            if (ghost_wall != null)
-            {
-                ghost_wall.gameObject.SetActive(false);
-            }
-
-
-             // make sure contra audio walls are off
-            Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
-            Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
-            if (ghost_sound_wall != null)
-            {
-                ghost_sound_wall.gameObject.SetActive(false);
-            }
-
-            if (mute_wall != null)
-            {
-                mute_wall.gameObject.SetActive(false);
-            }
-
-            Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
-            if (morph_wall != null)
-            {
-                morph_wall.gameObject.SetActive(true);
-            }
-            
-            
-
-            print("audio");
-            // Make sure Obstruction of view is on -NO VISION
-            ObscureObj.SetActive(true);
-            // Make sure listener is ON
-            audioSource3.volume = 0.5f;
-            //AudioListener.volume = 1f;
-
+            invisi_wall.gameObject.SetActive(false);
         }
 
-        void ApplyVisualOnly(string maze_name)
+        if (ghost_wall != null)
         {
-            // Condition 2 - Visual Only
-            // Make contra visual walls are off
-            AudioSource audioSource3 = player.GetComponent<AudioSource>();
-            Transform maze_transform = GameObject.Find(maze_name).transform;
-            Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
-            Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
-            if (invisi_wall != null)
-            {
-                invisi_wall.gameObject.SetActive(false);
-            }
-
-            if (ghost_wall != null)
-            {
-                ghost_wall.gameObject.SetActive(false);
-            }
-
-
-             // make sure contra audio walls are off
-            Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
-            Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
-            if (ghost_sound_wall != null)
-            {
-                ghost_sound_wall.gameObject.SetActive(false);
-            }
-
-            if (mute_wall != null)
-            {
-                mute_wall.gameObject.SetActive(false);
-            }
-            
-            Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
-            if (morph_wall != null)
-            {
-                morph_wall.gameObject.SetActive(true);
-            }
-
-
-            // Make sure Obstruction of view is off
-            ObscureObj.SetActive(false);
-            // Make sure listener is off - NO SOUND
-            audioSource3.volume = 0f;
-            //AudioListener.volume = 0f;
-            print("visual");
-
+            ghost_wall.gameObject.SetActive(false);
         }
 
-        void ApplyContraVisual(string maze_name)
+
+            // make sure contra audio walls are off
+        Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
+        Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
+        if (ghost_sound_wall != null)
         {
-            AudioSource audioSource3 = player.GetComponent<AudioSource>();
-            // Apply condition 3 - contra visual - visual is false, needs to count on Audio
-            // Make sure Obstruction of view is off
-            ObscureObj.SetActive(false);
-            // Make sure listener is on
-            audioSource3.volume = 0.5f;
-            //AudioListener.volume = 1f;
-            // Make sure contra visual walls are ON
-            Transform maze_transform = GameObject.Find(maze_name).transform;
-            Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
-            Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
-            if(invisi_wall != null)
-            {
-                invisi_wall.gameObject.SetActive(true);
-            }
-
-            if(ghost_wall != null)
-            {
-                ghost_wall.gameObject.SetActive(true);
-            }
-
-             // make sure contra audio walls are off
-            Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
-            foreach(Transform child in maze_transform){
-                print(child);
-                if(child.name == "GhostSoundWall"){
-                print("C2905");
-                }
-            }
-            Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
-
-            if (ghost_sound_wall != null)
-            {
-                print("A2905");
-                ghost_sound_wall.gameObject.SetActive(false);
-            }
-            else
-            {
-                print("B2905");
-            }
-
-            if (mute_wall != null)
-            {
-                mute_wall.gameObject.SetActive(false);
-            }
-            
-            Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
-            if (morph_wall != null)
-            {
-                morph_wall.gameObject.SetActive(false);
-            }
-
-            print("contra_visual");
-
+            ghost_sound_wall.gameObject.SetActive(false);
         }
 
-        void ApplyContraAudio(string maze_name)
+        if (mute_wall != null)
         {
-            AudioSource audioSource3 = player.GetComponent<AudioSource>();    
-            // Apply condition 4 to the maze objects
-            ObscureObj.SetActive(false);
-            audioSource3.volume = 0.5f;
-            //AudioListener.volume = 1f;
-            print("contra_audio");            
-            // Make sure ghost walls are off
-            Transform maze_transform = GameObject.Find(maze_name).transform;
-            Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
-            Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
-            if (invisi_wall != null)
-            {
-                invisi_wall.gameObject.SetActive(false);
-            }
-
-            if (ghost_wall != null)
-            {
-                ghost_wall.gameObject.SetActive(false);
-            }
-            // make sure contra audio walls are ON
-            Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
-            Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
-
-            if (ghost_sound_wall != null)
-            {
-                ghost_sound_wall.gameObject.SetActive(true);
-            }
-
-            if (mute_wall != null)
-            {
-                mute_wall.gameObject.SetActive(true);
-            }
-
-            Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
-            if (morph_wall != null)
-            {
-                morph_wall.gameObject.SetActive(false);
-            }
-
+            mute_wall.gameObject.SetActive(false);
         }
-            
-        void ApplyVisualAudio(string maze_name)
+
+        Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
+        if (morph_wall != null)
         {
-            AudioSource audioSource3 = player.GetComponent<AudioSource>();   
-            // Condition 2 - Visual Only
-            // Make contra visual walls are off
-            Transform maze_transform = GameObject.Find(maze_name).transform;
-            Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
-            Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
-            if (invisi_wall != null)
-            {
-                invisi_wall.gameObject.SetActive(false);
-            }
-
-            if (ghost_wall != null)
-            {
-                ghost_wall.gameObject.SetActive(false);
-            }
-
-
-             // make sure contra audio walls are off
-            Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
-            Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
-            if (ghost_sound_wall != null)
-            {
-                ghost_sound_wall.gameObject.SetActive(false);
-            }
-
-            if (mute_wall != null)
-            {
-                mute_wall.gameObject.SetActive(false);
-            }
-            
-            Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
-            if (morph_wall != null)
-            {
-                morph_wall.gameObject.SetActive(true);
-            }
-
-
-            // Make sure Obstruction of view is off
-            ObscureObj.SetActive(false);
-            // Make sure listener is ON
-            audioSource3.volume = 0.5f;
-            //AudioListener.volume = 1f;
-            print("all");
-
+            morph_wall.gameObject.SetActive(true);
         }
+        
+        
+
+        print("audio");
+        // Make sure Obstruction of view is on -NO VISION
+        ObscureObj.SetActive(true);
+        // Make sure listener is ON
+        audioSource3.volume = 0.5f;
+        //AudioListener.volume = 1f;
+
+    }
+
+    void ApplyVisualOnly(string maze_name)
+    {
+        // Condition 2 - Visual Only
+        // Make contra visual walls are off
+        AudioSource audioSource3 = player.GetComponent<AudioSource>();
+        Transform maze_transform = GameObject.Find(maze_name).transform;
+        Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
+        Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
+        if (invisi_wall != null)
+        {
+            invisi_wall.gameObject.SetActive(false);
+        }
+
+        if (ghost_wall != null)
+        {
+            ghost_wall.gameObject.SetActive(false);
+        }
+
+
+            // make sure contra audio walls are off
+        Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
+        Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
+        if (ghost_sound_wall != null)
+        {
+            ghost_sound_wall.gameObject.SetActive(false);
+        }
+
+        if (mute_wall != null)
+        {
+            mute_wall.gameObject.SetActive(false);
+        }
+        
+        Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
+        if (morph_wall != null)
+        {
+            morph_wall.gameObject.SetActive(true);
+        }
+
+
+        // Make sure Obstruction of view is off
+        ObscureObj.SetActive(false);
+        // Make sure listener is off - NO SOUND
+        audioSource3.volume = 0f;
+        //AudioListener.volume = 0f;
+        print("visual");
+
+    }
+
+    void ApplyContraVisual(string maze_name)
+    {
+        AudioSource audioSource3 = player.GetComponent<AudioSource>();
+        // Apply condition 3 - contra visual - visual is false, needs to count on Audio
+        // Make sure Obstruction of view is off
+        ObscureObj.SetActive(false);
+        // Make sure listener is on
+        audioSource3.volume = 0.5f;
+        //AudioListener.volume = 1f;
+        // Make sure contra visual walls are ON
+        Transform maze_transform = GameObject.Find(maze_name).transform;
+        Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
+        Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
+        if(invisi_wall != null)
+        {
+            invisi_wall.gameObject.SetActive(true);
+        }
+
+        if(ghost_wall != null)
+        {
+            ghost_wall.gameObject.SetActive(true);
+        }
+
+            // make sure contra audio walls are off
+        Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
+        foreach(Transform child in maze_transform){
+            if(child.name == "GhostSoundWall"){
+            }
+        }
+        Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
+
+        if (ghost_sound_wall != null)
+        {
+            ghost_sound_wall.gameObject.SetActive(false);
+        }
+        else
+        {
+        }
+
+        if (mute_wall != null)
+        {
+            mute_wall.gameObject.SetActive(false);
+        }
+        
+        Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
+        if (morph_wall != null)
+        {
+            morph_wall.gameObject.SetActive(false);
+        }
+
+        print("contra_visual");
+
+    }
+
+    void ApplyContraAudio(string maze_name)
+    {
+        AudioSource audioSource3 = player.GetComponent<AudioSource>();    
+        // Apply condition 4 to the maze objects
+        ObscureObj.SetActive(false);
+        audioSource3.volume = 0.5f;
+        //AudioListener.volume = 1f;
+        print("contra_audio");            
+        // Make sure ghost walls are off
+        Transform maze_transform = GameObject.Find(maze_name).transform;
+        Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
+        Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
+        if (invisi_wall != null)
+        {
+            invisi_wall.gameObject.SetActive(false);
+        }
+
+        if (ghost_wall != null)
+        {
+            ghost_wall.gameObject.SetActive(false);
+        }
+        // make sure contra audio walls are ON
+        Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
+        Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
+
+        if (ghost_sound_wall != null)
+        {
+            ghost_sound_wall.gameObject.SetActive(true);
+        }
+
+        if (mute_wall != null)
+        {
+            mute_wall.gameObject.SetActive(true);
+        }
+
+        Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
+        if (morph_wall != null)
+        {
+            morph_wall.gameObject.SetActive(false);
+        }
+
+    }
+        
+    void ApplyVisualAudio(string maze_name)
+    {
+        AudioSource audioSource3 = player.GetComponent<AudioSource>();   
+        // Condition 2 - Visual Only
+        // Make contra visual walls are off
+        Transform maze_transform = GameObject.Find(maze_name).transform;
+        Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
+        Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
+        if (invisi_wall != null)
+        {
+            invisi_wall.gameObject.SetActive(false);
+        }
+
+        if (ghost_wall != null)
+        {
+            ghost_wall.gameObject.SetActive(false);
+        }
+
+
+            // make sure contra audio walls are off
+        Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
+        Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
+        if (ghost_sound_wall != null)
+        {
+            ghost_sound_wall.gameObject.SetActive(false);
+        }
+
+        if (mute_wall != null)
+        {
+            mute_wall.gameObject.SetActive(false);
+        }
+        
+        Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
+        if (morph_wall != null)
+        {
+            morph_wall.gameObject.SetActive(true);
+        }
+
+
+        // Make sure Obstruction of view is off
+        ObscureObj.SetActive(false);
+        // Make sure listener is ON
+        audioSource3.volume = 0.5f;
+        //AudioListener.volume = 1f;
+        print("all");
+
+    }
+
+
+    void ApplyInvisible(string maze_name)
+    {AudioSource audioSource3 = player.GetComponent<AudioSource>(); 
+        // Condition 2 - Visual Only
+        // Make contra visual walls are off
+        Transform maze_transform = GameObject.Find(maze_name).transform;
+        Transform ghost_wall = maze_transform.Find("GhostWall"); // Replace "ChildObject" with the name of the child object
+        Transform invisi_wall = maze_transform.Find("InvisiWall"); // Replace "ChildObject" with the name of the child object
+        if (invisi_wall != null)
+        {
+            invisi_wall.gameObject.SetActive(false);
+        }
+
+        if (ghost_wall != null)
+        {
+            ghost_wall.gameObject.SetActive(false);
+        }
+
+
+            // make sure contra audio walls are off
+        Transform ghost_sound_wall = maze_transform.Find("GhostSoundWall"); // Replace "ChildObject" with the name of the child object
+        Transform mute_wall = maze_transform.Find("MuteWall"); // Replace "ChildObject" with the name of the child object
+        if (ghost_sound_wall != null)
+        {
+            ghost_sound_wall.gameObject.SetActive(false);
+        }
+
+        if (mute_wall != null)
+        {
+            mute_wall.gameObject.SetActive(false);
+        }
+        
+        Transform morph_wall = maze_transform.Find("MorphWall"); // Replace "ChildObject" with the name of the child object
+        if (morph_wall != null)
+        {
+            morph_wall.gameObject.SetActive(true);
+        }
+
+
+        // Make sure Obstruction of view is off
+        ObscureObj.SetActive(false);
+        // Make sure listener is ON
+        audioSource3.volume = 0.5f;
+        //AudioListener.volume = 1f;
+        foreach (GameObject obj in Object.FindObjectsOfType<GameObject>())
+        {
+            if (obj.CompareTag(activeTag))
+            {
+                continue;
+            }
+
+            if (obj.CompareTag("Floor"))
+            {
+                continue;
+            }
+
+            MeshRenderer meshRenderer = obj.GetComponent<MeshRenderer>();
+            if (meshRenderer != null){
+                meshRenderer.enabled = false;
+            }
+        }
+    }
             
 
 

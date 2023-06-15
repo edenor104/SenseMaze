@@ -122,6 +122,14 @@ public class PlayerMovement : MonoBehaviour
 			finishSound.volume -= startVolume * Time.deltaTime;
 		    }*/
 		    finishSound.Stop();
+            foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
+                {
+
+                    MeshRenderer meshRenderer = obj.GetComponent<MeshRenderer>();
+                    if (meshRenderer != null){
+                        meshRenderer.enabled = true;
+                    }
+                }
             
 
                 if(MainMenu.isTraining)

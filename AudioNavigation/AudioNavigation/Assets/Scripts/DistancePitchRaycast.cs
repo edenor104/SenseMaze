@@ -87,7 +87,6 @@ public class DistancePitchRaycast : MonoBehaviour
             audioSource.volume = 0.0f;
             if ((hit.distance < triggerColision))
                 {
-                    print(GameManagerScript.mazeIndex);
                     if (!audioSource2.isPlaying)
                     {
                         audioSource2.Play();
