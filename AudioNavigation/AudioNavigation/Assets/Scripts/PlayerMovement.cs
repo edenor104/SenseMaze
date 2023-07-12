@@ -87,13 +87,13 @@ public class PlayerMovement : MonoBehaviour
                 Vector3[] initial_positions = GameManagerScript.initial_position;
                 if(MainMenu.isTraining)
                 {
-                    ts.NextMaze();
+                    pm.NextLevelScreen();
 
                 }
                 else
                 {
                     ls.FailedReachLocation(MazeType, ConditionType, collision_number, MazeSolveTime);
-                    gms.NextMaze();
+                    pm.NextLevelScreen();
                 }
             }
 
@@ -122,14 +122,14 @@ public class PlayerMovement : MonoBehaviour
 			finishSound.volume -= startVolume * Time.deltaTime;
 		    }*/
 		    finishSound.Stop();
-            foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
+            /*foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
                 {
 
                     MeshRenderer meshRenderer = obj.GetComponent<MeshRenderer>();
                     if (meshRenderer != null){
                         meshRenderer.enabled = true;
                     }
-                }
+                }*/
             
 
                 if(MainMenu.isTraining)

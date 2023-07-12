@@ -18,6 +18,11 @@ TagManager:
   - PauseMenu
   - AudioGoal
   - OuterWall
+  - PhantomMaze
+  - PhantomMazeAudio
+  - PhantomWall
+  - PhantomGoal
+  - PhantomAudioWall
   layers:
   - Default
   - TransparentFX

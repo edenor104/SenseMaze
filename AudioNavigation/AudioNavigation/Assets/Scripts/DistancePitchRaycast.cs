@@ -8,12 +8,16 @@ public class DistancePitchRaycast : MonoBehaviour
     public float triggerColision = 0.002f; // the distance at which the audio pitch will change
     public float minPitch = 1.0f; // the minimum audio pitch
     public float maxPitch = 2.0f; // the maximum audio pitch
+    private float delayTimer = 0.0f;
+
+    int j = 0;
 
     private AudioSource audioSource; // the audio source component attached to this game object
     private AudioSource audioSource2; // the audio source component  for game mode
     private AudioSource audioSource3; // the audio source component for training mode
 
     private RaycastHit hit; // the raycast hit info
+    private RaycastHit hit1; // Declare the variable before using it
     private PauseMenu pauseMenu;
 
 
@@ -97,6 +101,28 @@ public class DistancePitchRaycast : MonoBehaviour
 
             }
 
+
+        if (GameManagerScript.conditions[GameManagerScript.mazeIndex] == "const_contra_audio")
+        {      
+        if (Physics.Raycast(transform.position, transform.forward, out hit))
+            {
+            
+            float[] randomNumber_list = {2f, 0.5f, 0f, 3f, 1.5f, 0.5f, 1.2f, 0.7f};
+            float[] time_waiting = {2f, 1f, 4f, 2f, 5f, 2f, 2.5f, 3f};
+            delayTimer += Time.deltaTime;
+            if (delayTimer >= time_waiting[j])
+            {
+            // Execute your desired action after the specified delay duration
+            float pitch = maxPitch * ((Mathf.Abs(hit.distance)) / ((Mathf.Abs(hit.distance))+1.5f)) + randomNumber_list[j];
+            audioSource.pitch =  pitch;              // set the audio source pitch
+            j = (j + 1) % randomNumber_list.Length;
+            // Reset timer for the next delay
+             delayTimer = 0.0f;
+            }
+            return; // Skip the rest of the code in the Update function
+        
+            }
+        }
                     // shoot a raycast from the player in the forward direction
         if (Physics.Raycast(transform.position, transform.forward, out hit))
         {
@@ -121,6 +147,8 @@ public class DistancePitchRaycast : MonoBehaviour
             }
         }
         }
+
+        
         
 
 

@@ -39,15 +39,20 @@ public class GameManagerScript : MonoBehaviour
 
     
 
-    public static string[] mazes_name_list =  new string[]  {"Maze1", "Maze2", "Maze3", "Maze4",
-    "Maze3", "Maze4", "Maze2", "Maze1",
-    "Maze2", "Maze4", "Maze3", "Maze1",
-     "Maze4", "Maze3", "Maze2", "Maze1",
+    public static string[] mazes_name_list =  new string[]  {"Maze1", "Maze2", "Maze3", "Maze1", "Maze4", "Maze1", "Maze2", "Maze1",
+    "Maze3", "Maze4", "Maze2", "Maze1", "Maze2", "Maze4", "Maze3", "Maze4",
+    "Maze2", "Maze4", "Maze3", "Maze1", "Maze3", "Maze2", "Maze3", "Maze2",
+     "Maze4", "Maze3", "Maze2", "Maze1", "Maze4",  "Maze1", "Maze4","Maze3",
      "Maze2", "Maze1", "Maze3", "Maze4" } ;
-    public static string[] conditions = new string[] {"invisible", "visual_only", "contra_audio", "audio_only",
-     "visual_only", "contra_visual", "contra_audio", "audio_only",
-      "contra_visual", "visual_only", "invisible", "contra_visual",
-       "contra_audio", "contra_visual", "audio_only","visual_only",
+    /*public static string[] conditions = new string[] {"const_contra_audio", "const_contra_visual", "const_contra_visual", "const_contra_visual", "const_contra_audio2",
+     "const_contra_audio2", "const_contra_audio2", "const_contra_audio2", "audio_only", "all",
+      "contra_visual", "visual_only", "invisible", "contra_visual", "all",
+       "contra_audio", "contra_visual", "audio_only","visual_only", "all",
+       "invisible","contra_audio", "audio_only", "invisible"};*/
+    public static string[] conditions = new string[] {"invisible", "visual_only", "contra_audio", "const_contra_visual", "audio_only", "all", "const_contra_audio", "const_contra_audio2",
+     "visual_only", "contra_visual", "contra_audio", "audio_only", "const_contra_visual", "const_contra_audio", "all", "const_contra_audio2",
+      "contra_visual", "visual_only", "invisible", "contra_visual", "const_contra_visual", "all", "const_contra_audio", "const_contra_audio2",
+       "contra_audio", "contra_visual", "audio_only","visual_only","const_contra_visual",  "const_contra_audio", "all", "const_contra_audio2",
        "invisible","contra_audio", "audio_only", "invisible"};
     public GameObject player; // the player game object
     // audio clips to play for raycasting sounds
@@ -57,26 +62,11 @@ public class GameManagerScript : MonoBehaviour
     private static Vector3 maze3_intial_location = new Vector3(0.62f, 0.219f, 0.83f);
     private static Vector3 maze4_intial_location = new Vector3(-0.59f, 0.219f, 0.86f); 
     public  static Vector3[] initial_position = {
-        maze1_intial_location,
-        maze2_intial_location,
-        maze3_intial_location,
-        maze4_intial_location,
-        maze3_intial_location,
-        maze4_intial_location,
-        maze2_intial_location,
-        maze1_intial_location,
-        maze2_intial_location,
-        maze4_intial_location,
-        maze3_intial_location,
-        maze1_intial_location,
-        maze4_intial_location,
-        maze3_intial_location,
-        maze2_intial_location,
-        maze1_intial_location,
-        maze2_intial_location,
-        maze1_intial_location,
-        maze3_intial_location,
-        maze4_intial_location,
+        maze1_intial_location, maze2_intial_location, maze3_intial_location, maze1_intial_location, maze4_intial_location, maze1_intial_location, maze2_intial_location, maze1_intial_location,
+        maze3_intial_location, maze4_intial_location, maze2_intial_location, maze1_intial_location,  maze2_intial_location, maze4_intial_location, maze3_intial_location, maze4_intial_location,
+        maze2_intial_location, maze4_intial_location, maze3_intial_location, maze1_intial_location,  maze3_intial_location, maze2_intial_location, maze3_intial_location, maze2_intial_location,
+        maze4_intial_location, maze3_intial_location, maze2_intial_location, maze1_intial_location, maze4_intial_location, maze1_intial_location, maze4_intial_location, maze3_intial_location,
+        maze2_intial_location, maze1_intial_location, maze3_intial_location, maze4_intial_location,
     };
     // AudioSource NextLevelSound = GameObject.FindWithTag("Floor").GetComponent<AudioSource>();
    // AudioSource audioSource = GameManager.GetComponent<AudioSource>();
@@ -165,9 +155,30 @@ public class GameManagerScript : MonoBehaviour
         AudioSource NextLevelSound = GameObject.FindWithTag("Floor").GetComponent<AudioSource>();
         Transform targetTransform = player.GetComponent<Transform>();
         CharacterController controller_player = player.GetComponent<CharacterController>();
-        foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
+        GameObject[] phantom_mazes = GameObject.FindGameObjectsWithTag("PhantomMaze");
+        GameObject[] phantom_mazes2 = GameObject.FindGameObjectsWithTag("PhantomMazeAudio");
+        int layer = LayerMask.NameToLayer("Default");
+
+
+        
+        foreach (GameObject phantom_maze in phantom_mazes) // make sure to turn off phantom visual mazes
+        {
+        if (phantom_maze != null)
             {
-                if (obj.CompareTag("InvisiWall") || obj.CompareTag("GhostSoundWall") || obj.CompareTag("StartingPoint") )
+            phantom_maze.SetActive(false);
+            }
+        }
+
+        foreach (GameObject phantom_maze2 in phantom_mazes2) // make sure to turn off phantom audio mazes
+        {
+        if (phantom_maze2 != null)
+            {
+            phantom_maze2.SetActive(false);
+            }
+        } 
+        foreach (GameObject obj in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (obj.CompareTag("InvisiWall") || obj.CompareTag("PhantomAudioWall") || obj.CompareTag("GhostSoundWall") || obj.CompareTag("StartingPoint") ) // for setting obkect to return some objects as invisible
                 {
                 continue;
                 }
@@ -178,15 +189,22 @@ public class GameManagerScript : MonoBehaviour
                 }
             }
 
-        string[] mazes_names = new string[]  {"Maze1", "Maze2", "Maze3", "Maze4",
-        "Maze3", "Maze4", "Maze2", "Maze1",
-        "Maze2", "Maze4", "Maze3", "Maze1",
-        "Maze4", "Maze3", "Maze2", "Maze1",
-        "Maze2", "Maze1", "Maze3", "Maze4" } ;
+        foreach (GameObject obj in Resources.FindObjectsOfTypeAll<GameObject>()) // for setting obkect to return raycasting sound
+            {
+                if (obj.CompareTag("MuteWall")  || obj.CompareTag("PhantomWall")|| obj.CompareTag("Finish") || obj.CompareTag("Player") || obj.CompareTag("StartingPoint") ||  obj.CompareTag("GhostWall") )
+                {
+                continue;
+                }
+
+            // Set the layer of the child object
+            obj.layer = layer;
+            }
+
         // change next screen title according to a condition
-        mazeIndex = (mazeIndex + 1) % 20;
+        mazeIndex = (mazeIndex + 1) % mazes_name_list.Length;
+        print(mazeIndex);
         count = count + 1;
-        if (count == 21) 
+        if (count ==  mazes_name_list.Length + 1) 
             {
             Application.Quit();
             return;
@@ -195,7 +213,7 @@ public class GameManagerScript : MonoBehaviour
         print(conditions[mazeIndex]);
         if (textMeshPro != null)
         {
-            if ((mazeIndex +1) == 20)
+            if ((mazeIndex +1) ==  mazes_name_list.Length)
             {
 
             }    
@@ -222,11 +240,21 @@ public class GameManagerScript : MonoBehaviour
                     case "invisible" when true:
                     textMeshPro.text = "Trust Audio, Visual Could Be Misleading";
                         break;
+                    case "const_contra_audio" when true:
+                    textMeshPro.text = "Trust Visual, Audio Could Be Misleading";
+                        break;
+                    case "const_contra_audio2" when true:
+                    textMeshPro.text = "Trust Visual, Audio Could Be Misleading";
+                        break;
+                    case "const_contra_visual" when true:
+                    textMeshPro.text = "Trust Audio, Visual Could Be Misleading";
+                        break;
+
                 }
             }
         }
         print("Index Maze after Addition:" + mazeIndex);
-        print(mazes_names[mazeIndex]);
+        print(mazes_name_list[mazeIndex]);
         PlayerMovement.collision_number = 0;
         PlayerMovement.StartingTimeMaze = Time.time;
         NextLevelSound.Play();
@@ -234,7 +262,7 @@ public class GameManagerScript : MonoBehaviour
         //print(conditions);
         controller_player.enabled = false;
         targetTransform.position = initial_position[mazeIndex];
-        if(mazes_names[mazeIndex] == "Maze4")
+        if(mazes_name_list[mazeIndex] == "Maze4")
         {
             targetTransform.rotation =  Quaternion.Euler(0f, 180f, 0f);
         }
@@ -244,8 +272,8 @@ public class GameManagerScript : MonoBehaviour
         }
         controller_player.enabled = true;
         //print(mazes_name_list);
-        mm.ActivateMaze(mazes_names[mazeIndex]);
-        mm.ActivateCondition(conditions[mazeIndex], mazes_names[mazeIndex]);
+        mm.ActivateMaze(mazes_name_list[mazeIndex]);
+        mm.ActivateCondition(conditions[mazeIndex], mazes_name_list[mazeIndex]);
 
 
     }
