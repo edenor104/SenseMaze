@@ -8,9 +8,9 @@ public class DistancePitchRaycast : MonoBehaviour
     public float triggerColision = 0.002f; // the distance at which the audio pitch will change
     public float minPitch = 1.0f; // the minimum audio pitch
     public float maxPitch = 2.0f; // the maximum audio pitch
-    private float delayTimer = 0.0f;
+    //private float delayTimer = 0.0f;
 
-    int j = 0;
+    //int j = 0;
 
     private AudioSource audioSource; // the audio source component attached to this game object
     private AudioSource audioSource2; // the audio source component  for game mode
@@ -86,23 +86,26 @@ public class DistancePitchRaycast : MonoBehaviour
 
         }
         else{
-        if (GameManagerScript.conditions[GameManagerScript.mazeIndex] == "visual_only")
-            {
-            audioSource.volume = 0.0f;
-            if ((hit.distance < triggerColision))
+        if (GameManagerScript.mazeIndex != -1)
+        {    
+            if (GameManagerScript.conditions[GameManagerScript.mazeIndex] == "visual_only")
                 {
-                    if (!audioSource2.isPlaying)
+                audioSource.volume = 0.0f;
+                if ((hit.distance < triggerColision))
                     {
-                        audioSource2.Play();
+                        if (!audioSource2.isPlaying)
+                        {
+                            audioSource2.Play();
+                        }
                     }
-                }
-            Physics.Raycast(transform.position, transform.forward, out hit);
-            return; // Skip the rest of the code in the Update function
+                Physics.Raycast(transform.position, transform.forward, out hit);
+                return; // Skip the rest of the code in the Update function
 
+                }
             }
 
 
-        if (GameManagerScript.conditions[GameManagerScript.mazeIndex] == "const_contra_audio")
+        /*if (GameManagerScript.conditions[GameManagerScript.mazeIndex] == "const_contra_audio")
         {      
         if (Physics.Raycast(transform.position, transform.forward, out hit))
             {
@@ -122,7 +125,7 @@ public class DistancePitchRaycast : MonoBehaviour
             return; // Skip the rest of the code in the Update function
         
             }
-        }
+        }*/
                     // shoot a raycast from the player in the forward direction
         if (Physics.Raycast(transform.position, transform.forward, out hit))
         {

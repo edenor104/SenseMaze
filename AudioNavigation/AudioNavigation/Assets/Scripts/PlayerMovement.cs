@@ -20,14 +20,14 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController controller;
     //private AudioClip[] audioClips;
     [SerializeField] private GameManagerScript GameManagerScript;
-    private Vector3[] initial_positions = GameManagerScript.initial_position;
+    //private Vector3[] initial_positions = GameManagerScript.initial_position;
     public static int collision_number = 0;
     public static int collision_status = 0;
 
     public float speed = 8f;
     int mazeIndex = GameManagerScript.mazeIndex;
-    private string[] MazeType = GameManagerScript.mazes_name_list;
-    private string[] ConditionType = GameManagerScript.conditions;
+    private string[] MazeType;
+    private string[] ConditionType;
     string filePath;
 
     //LoggerScript ls;
@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (MazeSolveTime > 120)
             {
-                Vector3[] initial_positions = GameManagerScript.initial_position;
+                //Vector3[] initial_positions = GameManagerScript.initial_position;
                 if(MainMenu.isTraining)
                 {
                     pm.NextLevelScreen();
@@ -92,6 +92,8 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
+                    MazeType = GameManagerScript.mazes_name_list;
+                    ConditionType = GameManagerScript.conditions;
                     ls.FailedReachLocation(MazeType, ConditionType, collision_number, MazeSolveTime);
                     pm.NextLevelScreen();
                 }
@@ -141,6 +143,8 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
+                    MazeType = GameManagerScript.mazes_name_list;
+                    ConditionType = GameManagerScript.conditions;
                     ls.ReachLocation(MazeType, ConditionType, collision_number, MazeSolveTime);
                     SuccessSound.Play();
                     //finishSound.volume = startVolume;
@@ -192,7 +196,7 @@ public class PlayerMovement : MonoBehaviour
             if (other.gameObject.CompareTag("StartingPoint"))
             {
                 print(5);
-                collision_status = 5;
+                collision_status = 6;
                 audioSource2.Play();
             }
             else

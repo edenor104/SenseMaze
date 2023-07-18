@@ -14,8 +14,8 @@ public class PauseMenu : MonoBehaviour
     public bool isPaused;
     public GameManagerScript gms;
     private TrainingScript ts;
-    private string[] MazeType = GameManagerScript.mazes_name_list;
-    private string[] ConditionType = GameManagerScript.conditions;
+    //private string[] MazeType = GameManagerScript.mazes_name_list;
+    //private string[] ConditionType = GameManagerScript.conditions;
 
 
     // Start is called before the first frame update

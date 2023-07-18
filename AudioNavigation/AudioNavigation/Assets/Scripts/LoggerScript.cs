@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class LoggerScript : MonoBehaviour
 {
-    private Vector3[] initial_positions = GameManagerScript.initial_position;
-    private string[] MazeType = GameManagerScript.mazes_name_list;
-    private string[] ConditionType = GameManagerScript.conditions;
+    //private Vector3[] initial_positions = GameManagerScript.initial_position;
+    private string[] MazeType;
+    private string[] ConditionType;
     private float samplingTime = 0.02f; // sample time in sec
     private string date_string = DateTime.Now.ToString("-dd-MM-yyyy_hh-mm-ss");
     public GameObject player; // the player game object
@@ -30,6 +30,8 @@ public class LoggerScript : MonoBehaviour
 
     public void OnEnable()
     {
+        MazeType = GameManagerScript.mazes_name_list;
+        ConditionType = GameManagerScript.conditions;
         InvokeRepeating("SampleNow", 0, samplingTime);
     }
 
@@ -58,6 +60,9 @@ public class LoggerScript : MonoBehaviour
 
     public void SampleNow()
     {
+        MazeType = GameManagerScript.mazes_name_list;
+        ConditionType = GameManagerScript.conditions;
+        //print(MazeType.Length);
         int maze_index = GameManagerScript.mazeIndex;
         int cur_collision_status = PlayerMovement.collision_status;
         Transform targetTransform = player.GetComponent<Transform>();

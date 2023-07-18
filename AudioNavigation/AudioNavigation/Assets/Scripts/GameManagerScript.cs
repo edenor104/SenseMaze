@@ -9,51 +9,26 @@ using TMPro;
 
 public class GameManagerScript : MonoBehaviour
 {
-    /*public class Maze{
-    public string maze_name;
-    public Vector3 initial_position;
-
-        public Maze(string name, Vector3 initial_position)
-        {
-            this.maze_name = name;
-            this.initial_position = initial_position;
-        }
-    }*/
 
     public GameObject mazes;
     MazeManager mm;
     LoggerScript ls;
     TrainingScript ts;
-
+    PauseMenu pm;
+    public GameObject NextLevelCanvas1;
     public List<Transform> all_mazes;
     public GameObject Goal;
     public static int mazeIndex = -1;
     public static int count = 0;
+
     private string temp_str;
     private Transform temp_trans;
     private AudioSource audioSource; // the audio source component attached to this game object
+    private string[] MazeType_temp = new string[]  {} ;
+    private string[] ConditionType_temp = new string[]  {} ;
     public TextMeshProUGUI textMeshPro;
-
-
-
-
-    
-
-    public static string[] mazes_name_list =  new string[]  {"Maze1", "Maze2", "Maze3", "Maze1", "Maze4", "Maze1", "Maze2", "Maze1",
-    "Maze3", "Maze4", "Maze2", "Maze1", "Maze2", "Maze4", "Maze3", "Maze4",
-    "Maze2", "Maze4", "Maze3", "Maze1", "Maze3", "Maze2", "Maze3", "Maze2",
-     "Maze4", "Maze3", "Maze2", "Maze1", "Maze4",  "Maze1", "Maze4","Maze3",
-     "Maze2", "Maze1", "Maze3", "Maze4" } ;
-    /*public static string[] conditions = new string[] {"const_contra_audio", "const_contra_visual", "const_contra_visual", "const_contra_visual", "const_contra_audio2",
-     "const_contra_audio2", "const_contra_audio2", "const_contra_audio2", "audio_only", "all",
-      "contra_visual", "visual_only", "invisible", "contra_visual", "all",
-       "contra_audio", "contra_visual", "audio_only","visual_only", "all",
-       "invisible","contra_audio", "audio_only", "invisible"};*/
-    public static string[] conditions = new string[] {"invisible", "visual_only", "contra_audio", "const_contra_visual", "audio_only", "all", "const_contra_audio", "const_contra_audio2",
-     "visual_only", "contra_visual", "contra_audio", "audio_only", "const_contra_visual", "const_contra_audio", "all", "const_contra_audio2",
-      "contra_visual", "visual_only", "invisible", "contra_visual", "const_contra_visual", "all", "const_contra_audio", "const_contra_audio2",
-       "contra_audio", "contra_visual", "audio_only","visual_only","const_contra_visual",  "const_contra_audio", "all", "const_contra_audio2",
-       "invisible","contra_audio", "audio_only", "invisible"};
+    public static string[] mazes_name_list =  new string[]  {} ;
+    public static string[] conditions = new string[] {};
     public GameObject player; // the player game object
     // audio clips to play for raycasting sounds
     public AudioClip[] audioClips;
@@ -61,40 +36,23 @@ public class GameManagerScript : MonoBehaviour
     private static Vector3 maze2_intial_location = new Vector3(0.62f, 0.219f, 0.83f);
     private static Vector3 maze3_intial_location = new Vector3(0.62f, 0.219f, 0.83f);
     private static Vector3 maze4_intial_location = new Vector3(-0.59f, 0.219f, 0.86f); 
-    public  static Vector3[] initial_position = {
-        maze1_intial_location, maze2_intial_location, maze3_intial_location, maze1_intial_location, maze4_intial_location, maze1_intial_location, maze2_intial_location, maze1_intial_location,
-        maze3_intial_location, maze4_intial_location, maze2_intial_location, maze1_intial_location,  maze2_intial_location, maze4_intial_location, maze3_intial_location, maze4_intial_location,
-        maze2_intial_location, maze4_intial_location, maze3_intial_location, maze1_intial_location,  maze3_intial_location, maze2_intial_location, maze3_intial_location, maze2_intial_location,
-        maze4_intial_location, maze3_intial_location, maze2_intial_location, maze1_intial_location, maze4_intial_location, maze1_intial_location, maze4_intial_location, maze3_intial_location,
-        maze2_intial_location, maze1_intial_location, maze3_intial_location, maze4_intial_location,
-    };
-    // AudioSource NextLevelSound = GameObject.FindWithTag("Floor").GetComponent<AudioSource>();
-   // AudioSource audioSource = GameManager.GetComponent<AudioSource>();
 
-
-    /*public GameManagerScript()
+    void Awake()
     {
-        Maze maze1 = new maze("Maze1", new Vector3(0.935f, 0.131f, -1.19f));
-        Maze maze2 = new maze("Maze2", new Vector3(0.935f, 0.131f, 1.196f));
-        Maze maze3 = new maze("Maze3", new Vector3(0.889f, 0.132f, -1.22f));
-        Maze maze4 = new maze("Maze4", new Vector3(0.889f, 0.131f, 1.22f));
+        string csvFilePath = Application.dataPath + "/Maze_conds.csv";
+        int[] maze_vector = ReadCSV<int>(csvFilePath);
+        Console.WriteLine(string.Join(" ", maze_vector));
+        (MazeType_temp, ConditionType_temp) = GenerateMazeArrays(maze_vector);
+        print(MazeType_temp.Length);
+        mazes_name_list = MazeType_temp;
+        print(mazes_name_list.Length);
+        conditions = ConditionType_temp;
+        UpdateTextNextLevelScreen(conditions[0]);
 
-        Maze[] mazes =  new Maze[]  {maze1, maze2, maze3, maze4, maze3, maze4, maze2, maze1, maze2, maze4, maze3, maze1, maze4, maze3, maze2, maze1 };
-        this.mazes_name_list = new string[16];
-        this.initial_position = new Vector3[16];
-        for(int i=0; i<16; i++)
-        {
-            Maze maze = mazes[i];
-            this.mazes_name_list[i] = maze.maze_name;
-            this.initial_position[i] = maze.initial_position;
-        };
-    }*/
-
-
-
+    }
     // Start is called before the first frame update
     void Start()
-    {
+    {   
         //gameObject.layer uses only integers, but we can turn a layer name into a layer integer using LayerMask.NameToLayer()
         int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
         Goal.layer = LayerIgnoreRaycast;
@@ -102,20 +60,6 @@ public class GameManagerScript : MonoBehaviour
         mm = mazes.GetComponent<MazeManager>();
         audioSource = player.GetComponent<AudioSource>();
         MainMenu.isTraining = false;
-        //mm.TagWalls();
-
-        //ls = GameObject.FindWithTag("Logger").GetComponent<LoggerScript>();
-
-
-        // Create list of the mazes
-        //foreach (Transform child in mazes.transform)
-        //{
-        //    all_mazes.Add(child);
-        //}
-
-        // Psaudo-randomize the diffrent conditions and mazes
-        //ShuffleTransformArray(all_mazes, initial_position);
-        //ShuffleTransformArrayConditions(all_mazes, conditions);
         NextMaze();
     }
 
@@ -213,6 +157,12 @@ public class GameManagerScript : MonoBehaviour
         print(conditions[mazeIndex]);
         if (textMeshPro != null)
         {
+            if ((mazeIndex) ==  0)
+            {
+                //NextLevelCanvas1.SetActive(true);
+                //Time.timeScale = 0f;
+
+            }
             if ((mazeIndex +1) ==  mazes_name_list.Length)
             {
 
@@ -220,7 +170,154 @@ public class GameManagerScript : MonoBehaviour
                
             else
             {
-                switch (conditions[mazeIndex + 1])
+                UpdateTextNextLevelScreen(conditions[mazeIndex + 1]);
+            }
+        }
+        print("Index Maze after Addition:" + mazeIndex);
+        print(mazes_name_list[mazeIndex]);
+        PlayerMovement.collision_number = 0;
+        PlayerMovement.StartingTimeMaze = Time.time;
+        NextLevelSound.Play();
+        // activate random condition
+        //print(conditions);
+        controller_player.enabled = false;
+        switch (mazes_name_list[mazeIndex])
+                {
+                    case "Maze1" when true:
+                    targetTransform.position = maze1_intial_location;
+                        break;
+                    case "Maze2" when true:
+                    targetTransform.position = maze2_intial_location;
+                        break;
+                    case "Maze3" when true:
+                    targetTransform.position = maze3_intial_location;
+                        break;
+                    case "Maze4" when true:
+                    targetTransform.position = maze4_intial_location;
+                        break;
+                }
+        if(mazes_name_list[mazeIndex] == "Maze4")
+        {
+            targetTransform.rotation =  Quaternion.Euler(0f, 180f, 0f);
+        }
+        else
+        {
+            targetTransform.rotation =  Quaternion.Euler(0f, -90f, 0f);
+        }
+        controller_player.enabled = true;
+        //print(mazes_name_list);
+        mm.ActivateMaze(mazes_name_list[mazeIndex]);
+        mm.ActivateCondition(conditions[mazeIndex], mazes_name_list[mazeIndex]);
+
+
+    }
+
+
+    public (string[], string[]) GenerateMazeArrays(int[] mazeNumbers)
+    {
+        string[] mazeNames = new string[mazeNumbers.Length];
+        string[] mazeConditions = new string[mazeNumbers.Length];
+        
+        for (int i = 0; i < mazeNumbers.Length; i++)
+        {
+            int mazeNumber = mazeNumbers[i];
+            
+            int mazeIndex = mazeNumber / 10;
+            int conditionIndex = mazeNumber % 10;
+            string mazeName = "Maze" + mazeIndex;
+            switch (conditionIndex)
+                {
+                    case 1:
+                    mazeConditions[i] = "audio_only";
+                        break;
+                    case 2:
+                    mazeConditions[i] = "visual_only";
+                        break;
+                    case 3:
+                    mazeConditions[i] = "contra_visual";
+                        break;
+                    case 4:
+                    mazeConditions[i] = "contra_audio";
+                        break;
+                    case 5:
+                    mazeConditions[i] = "all";
+                        break;
+                    case 6:
+                    mazeConditions[i] = "invisible";
+                        break;
+                    case 7:
+                    mazeConditions[i] = "const_contra_audio2";
+                        break;
+                    case 8:
+                    mazeConditions[i] = "const_contra_visual";
+                        break;
+                    case 9:
+                    mazeConditions[i] = "const_contra_audio";
+                        break;
+
+                }            
+            mazeNames[i] = mazeName;
+        }
+        
+        return (mazeNames, mazeConditions);
+    }
+    
+
+    public T[] ReadCSV<T>(string relativeFilePath)
+    {
+        string csvFilePath = Path.Combine(Environment.CurrentDirectory, relativeFilePath);
+        string[] lines = File.ReadAllLines(csvFilePath);
+
+        int rowCount = lines.Length;
+        int columnCount = lines[0].Split(',').Length;
+        T[,] matrix = new T[rowCount, columnCount];
+
+        for (int i = 0; i < rowCount; i++)
+        {
+            string[] fields = lines[i].Split(',');
+
+            for (int j = 0; j < columnCount; j++)
+            {
+                if (TryParseValue<T>(fields[j], out T value))
+                {
+                    matrix[i, j] = value;
+                }
+                else
+                {
+                    // Handle parsing errors if needed
+                }
+            }
+        }
+
+        System.Random random = new System.Random();
+        int randomRowIndex = random.Next(0, rowCount);
+        T[] randomRow = new T[columnCount];
+
+        for (int j = 0; j < columnCount; j++)
+        {
+            randomRow[j] = matrix[randomRowIndex, j];
+        }
+
+        return randomRow;
+    }
+
+    private bool TryParseValue<T>(string input, out T value)
+    {
+        try
+        {
+            value = (T)Convert.ChangeType(input, typeof(T));
+            return true;
+        }
+        catch
+        {
+            value = default(T);
+            return false;
+        }
+    }
+
+  public void UpdateTextNextLevelScreen(string condition_name)
+    {
+      switch (condition_name)
                 {
                     case "audio_only" when true:
                     textMeshPro.text = "Next Maze: Only Audio";
@@ -250,36 +347,9 @@ public class GameManagerScript : MonoBehaviour
                     textMeshPro.text = "Trust Audio, Visual Could Be Misleading";
                         break;
 
-                }
-            }
-        }
-        print("Index Maze after Addition:" + mazeIndex);
-        print(mazes_name_list[mazeIndex]);
-        PlayerMovement.collision_number = 0;
-        PlayerMovement.StartingTimeMaze = Time.time;
-        NextLevelSound.Play();
-        // activate random condition
-        //print(conditions);
-        controller_player.enabled = false;
-        targetTransform.position = initial_position[mazeIndex];
-        if(mazes_name_list[mazeIndex] == "Maze4")
-        {
-            targetTransform.rotation =  Quaternion.Euler(0f, 180f, 0f);
-        }
-        else
-        {
-            targetTransform.rotation =  Quaternion.Euler(0f, -90f, 0f);
-        }
-        controller_player.enabled = true;
-        //print(mazes_name_list);
-        mm.ActivateMaze(mazes_name_list[mazeIndex]);
-        mm.ActivateCondition(conditions[mazeIndex], mazes_name_list[mazeIndex]);
-
+                }  
 
     }
-    
-    
-    
     
 
 }
