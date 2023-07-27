@@ -1,17 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class MazeManager : MonoBehaviour
 {
     public static AudioClip[] audioClips;
     public Camera mainCamera; // Drag the main camera object into this field in the inspector
+    public Material[] materials; // The array of materials you want to use.
+    public Color[] backgroundColors; // colors for the background
+    public Material[] materials_floor; // The array of materials you want to use.
     //public AudioListener listenerObject;
     public GameObject ObscureObj;
     public GameObject player;
     private string activeTag = "OuterWall"; 
+    private Camera playerCamera;
+    private Renderer renderer;
+    private int currentTextureIndex = 0;
+    void Start()
+    {
+        renderer = GetComponent<Renderer>();
 
-
+    }
 
     public void ActivateMaze(string curr_maze_name)
     {
@@ -32,8 +42,11 @@ public class MazeManager : MonoBehaviour
 
     public void ActivateCondition(string condition_name, string maze_name)
     {
+
+        int randomIndex = Random.Range(0, materials.Length); // Generate a random index within the materials array length.
+        ChangeWallsMaterial(maze_name, randomIndex); // Set the initial material by passing the desired index.  
         print(maze_name);
-            
+
         switch (condition_name)
         {
             case "audio_only" when true:
@@ -759,7 +772,48 @@ public class MazeManager : MonoBehaviour
         return filteredObjects.ToArray();
     }
      
-    
+    public void ChangeWallsMaterial(string maze_name, int index)
+    {   
+        Transform maze_transform = GameObject.Find(maze_name).transform;
+        GameObject[] PhantomVisualMaze =  GetChildGameObjectsWithTag(maze_transform, "PhantomMaze");
+        GameObject[] SoundWalls = GetChildGameObjectsWithTag(maze_transform, "SoundWall");
+        GameObject[] GhostWalls = GetChildGameObjectsWithTag(maze_transform, "GhostWall");
+        GameObject[] MorphWalls = GetChildGameObjectsWithTag(maze_transform, "MorphWall");
+        GameObject[] MuteWalls = GetChildGameObjectsWithTag(maze_transform, "MuteWall");
+        Transform PhantomVisualMazeTransfrom = PhantomVisualMaze[0].GetComponent<Transform>();
+        GameObject[] PhantomWalls =  GetChildGameObjectsWithTag(PhantomVisualMazeTransfrom, "PhantomWall");
+        GameObject[] Walls = SoundWalls.Concat(PhantomWalls).Concat(GhostWalls).Concat(MorphWalls).Concat(MuteWalls).ToArray();
+
+        GameObject floor = GameObject.FindGameObjectWithTag("Floor");
+        if (player != null)
+        {
+            playerCamera = player.GetComponent<Camera>();
+        }
+
+
+        foreach (GameObject obj in Walls)
+        {
+            Renderer objRenderer = obj.GetComponent<Renderer>();
+            if (objRenderer != null)
+            {
+                objRenderer.material = materials[index];
+
+            }
+        int randomIndex = Random.Range(0, materials_floor.Length); // Generate a random index within the materials array length.
+            Renderer floorRenderer = floor.GetComponent<Renderer>();
+            floorRenderer.material  =  materials_floor[randomIndex]; // The array of materials you want to use.
+            SetCameraBackgroundColor();
+        }
+    }
+
+        private void SetCameraBackgroundColor()
+    {
+        int randomIndex = Random.Range(0, backgroundColors.Length); // Generate a random index within the materials array length.
+        if (playerCamera != null && backgroundColors.Length > 0)
+        {
+            playerCamera.backgroundColor = backgroundColors[randomIndex];
+        }
+    }
     
 }
 

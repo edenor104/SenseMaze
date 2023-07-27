@@ -63,7 +63,7 @@ public class PauseMenu : MonoBehaviour
 
 
 
-        public void NextMazeButton()
+    public void NextMazeButton()
     {
         //string filePath1 = Application.dataPath + "/" + "Data" + "/" + "Mazes" + "-Summary" + ".csv";
         //string logText1 = string.Format("{0},{1},{2},{3},{4}", MazeType[mazeIndex], ConditionType[mazeIndex], collision_number, fail, MazeSolveTime);

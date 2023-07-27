@@ -20,7 +20,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject Goal;
     public static int mazeIndex = -1;
     public static int count = 0;
-
+ 
     private string temp_str;
     private Transform temp_trans;
     private AudioSource audioSource; // the audio source component attached to this game object
@@ -75,12 +75,10 @@ public class GameManagerScript : MonoBehaviour
             pos[rnd] = pos[i];
             arr[i] = temp_trans;
             pos[i] = temp_pos;
-
-
         }
     }
 
-        public void ShuffleTransformArrayConditions(List<Transform> arr, string[] cond)
+    public void ShuffleTransformArrayConditions(List<Transform> arr, string[] cond)
     {
         for (int i = 0; i < arr.Count; i++)
         {
@@ -103,8 +101,6 @@ public class GameManagerScript : MonoBehaviour
         GameObject[] phantom_mazes2 = GameObject.FindGameObjectsWithTag("PhantomMazeAudio");
         int layer = LayerMask.NameToLayer("Default");
 
-
-        
         foreach (GameObject phantom_maze in phantom_mazes) // make sure to turn off phantom visual mazes
         {
         if (phantom_maze != null)
@@ -115,16 +111,16 @@ public class GameManagerScript : MonoBehaviour
 
         foreach (GameObject phantom_maze2 in phantom_mazes2) // make sure to turn off phantom audio mazes
         {
-        if (phantom_maze2 != null)
-            {
-            phantom_maze2.SetActive(false);
-            }
+            if (phantom_maze2 != null)
+                {
+                    phantom_maze2.SetActive(false);
+                }
         } 
         foreach (GameObject obj in Resources.FindObjectsOfTypeAll<GameObject>())
             {
                 if (obj.CompareTag("InvisiWall") || obj.CompareTag("PhantomAudioWall") || obj.CompareTag("GhostSoundWall") || obj.CompareTag("StartingPoint") ) // for setting obkect to return some objects as invisible
                 {
-                continue;
+                    continue;
                 }
 
                 MeshRenderer meshRenderer = obj.GetComponent<MeshRenderer>();
@@ -150,8 +146,8 @@ public class GameManagerScript : MonoBehaviour
         count = count + 1;
         if (count ==  mazes_name_list.Length + 1) 
             {
-            Application.Quit();
-            return;
+                Application.Quit();
+                return;
             }
                 print("Count: " + count);
         print(conditions[mazeIndex]);
@@ -208,10 +204,7 @@ public class GameManagerScript : MonoBehaviour
         //print(mazes_name_list);
         mm.ActivateMaze(mazes_name_list[mazeIndex]);
         mm.ActivateCondition(conditions[mazeIndex], mazes_name_list[mazeIndex]);
-
-
     }
-
 
     public (string[], string[]) GenerateMazeArrays(int[] mazeNumbers)
     {
@@ -262,7 +255,6 @@ public class GameManagerScript : MonoBehaviour
         return (mazeNames, mazeConditions);
     }
     
-
     public T[] ReadCSV<T>(string relativeFilePath)
     {
         string csvFilePath = Path.Combine(Environment.CurrentDirectory, relativeFilePath);
@@ -346,9 +338,7 @@ public class GameManagerScript : MonoBehaviour
                     case "const_contra_visual" when true:
                     textMeshPro.text = "Trust Audio, Visual Could Be Misleading";
                         break;
-
                 }  
-
     }
     
 
