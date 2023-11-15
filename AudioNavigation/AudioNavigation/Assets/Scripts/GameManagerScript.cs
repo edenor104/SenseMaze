@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 
 
@@ -26,6 +27,8 @@ public class GameManagerScript : MonoBehaviour
     private AudioSource audioSource; // the audio source component attached to this game object
     private string[] MazeType_temp = new string[]  {} ;
     private string[] ConditionType_temp = new string[]  {} ;
+    //[SerializeField] private string GameHardMode;
+
     public TextMeshProUGUI textMeshPro;
     public static string[] mazes_name_list =  new string[]  {} ;
     public static string[] conditions = new string[] {};
@@ -39,7 +42,15 @@ public class GameManagerScript : MonoBehaviour
 
     void Awake()
     {
+         // Get the currently loaded scene
+        //Scene currentScene = SceneManager.GetActiveScene();
         string csvFilePath = Application.dataPath + "/Maze_conds.csv";
+
+        // Compare the name of the current scene with the target scene name
+        //if (currentScene.name == GameHardMode)
+        //{
+        //    csvFilePath = Application.dataPath + "/Maze_conds_hard.csv";
+        //}
         int[] maze_vector = ReadCSV<int>(csvFilePath);
         Console.WriteLine(string.Join(" ", maze_vector));
         (MazeType_temp, ConditionType_temp) = GenerateMazeArrays(maze_vector);
@@ -245,7 +256,10 @@ public class GameManagerScript : MonoBehaviour
                     mazeConditions[i] = "const_contra_visual";
                         break;
                     case 9:
-                    mazeConditions[i] = "const_contra_audio";
+                    mazeConditions[i] = "all";
+                        break;
+                    case 0:
+                    mazeConditions[i] = "const_contra_visual_rotation";
                         break;
 
                 }            
@@ -337,6 +351,15 @@ public class GameManagerScript : MonoBehaviour
                         break;
                     case "const_contra_visual" when true:
                     textMeshPro.text = "Trust Audio, Visual Could Be Misleading";
+                        break;
+                    case "const_contra_visual_rotation" when true:
+                    textMeshPro.text = "Trust Audio, Visual Could Be Misleading";
+                        break;
+                    case "const_contra_audio_rotation" when true:
+                    textMeshPro.text = "Trust Visual, Audio Could Be Misleading";
+                        break;
+                    case "const_contra_visual_no_audio" when true:
+                    textMeshPro.text = "No Audio, Visual Could Be Misleading";
                         break;
                 }  
     }

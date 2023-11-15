@@ -13,13 +13,35 @@ public class MazeManager : MonoBehaviour
     //public AudioListener listenerObject;
     public GameObject ObscureObj;
     public GameObject player;
-    private string activeTag = "OuterWall"; 
+    private string activeTag = "OuterWall";
+    private GameObject[] phantom_maze_list;  
     private Camera playerCamera;
     private Renderer renderer;
     private int currentTextureIndex = 0;
+    private bool rotationTriggered = true;
+
     void Start()
     {
         renderer = GetComponent<Renderer>();
+
+    }
+
+    private IEnumerator RotateUntilTrigger(Transform transformToRotate, Transform transformToRotate2)
+    {
+        float rotationSpeed = 30f;
+        float rotationSpeed2 = 40f;
+
+
+        print(rotationTriggered);
+        while (rotationTriggered)
+        {
+            transformToRotate.Rotate(Vector3.up * Time.deltaTime * rotationSpeed, Space.Self);
+            transformToRotate2.Rotate(Vector3.up * Time.deltaTime * rotationSpeed2, Space.Self);
+            yield return null;
+        }
+        transformToRotate.rotation =  Quaternion.Euler(0f, 90f, 0f);
+        transformToRotate2.rotation =  Quaternion.Euler(0f, 0f, 0f);
+
 
     }
 
@@ -42,8 +64,12 @@ public class MazeManager : MonoBehaviour
 
     public void ActivateCondition(string condition_name, string maze_name)
     {
-
         int randomIndex = Random.Range(0, materials.Length); // Generate a random index within the materials array length.
+        AudioSource audioSource3 = player.GetComponent<AudioSource>();
+        GameObject floor = GameObject.FindGameObjectWithTag("Floor");
+        GameObject emptyObject = new GameObject("EmptyObject");
+
+
         ChangeWallsMaterial(maze_name, randomIndex); // Set the initial material by passing the desired index.  
         print(maze_name);
 
@@ -71,11 +97,35 @@ public class MazeManager : MonoBehaviour
                 ApplyConstContraAudio(maze_name);
                 break;
             case "const_contra_visual" when true:
-                ApplyConstContraVisual(maze_name);
+                phantom_maze_list = ApplyConstContraVisual(maze_name);
                 break;
             case "const_contra_audio2" when true:
                 ApplyConstContraAudio2(maze_name);
                 break;
+            case "const_contra_visual_rotation" when true:
+                phantom_maze_list = ApplyConstContraVisual(maze_name);
+                Transform firstVisualObjTransform = phantom_maze_list[0].transform;
+                Transform floorTransform = floor.transform;
+                TriggerRotationStart();
+                StartCoroutine(RotateUntilTrigger(firstVisualObjTransform, floorTransform));
+                print("const_contra_visual_rotation");
+                break;
+            
+            case "const_contra_audio_rotation" when true:
+                phantom_maze_list = ApplyConstContraAudio2(maze_name);
+                Transform firstAudioObjTransform = phantom_maze_list[0].transform;
+                Transform emptyTransform = emptyObject.transform;
+                TriggerRotationStart();
+                StartCoroutine(RotateUntilTrigger(firstAudioObjTransform, emptyTransform));
+                print("const_contra_audio_rotation");
+                break;
+            case "const_contra_visual_no_audio" when true:
+                phantom_maze_list = ApplyConstContraVisual(maze_name);
+                // Make sure listener is OFF
+                print("const_contra_visual_no_audio");
+                audioSource3.volume = 0f;
+                break;
+            
         }
     }
     
@@ -554,7 +604,7 @@ public class MazeManager : MonoBehaviour
 
     }
 
-    void ApplyConstContraVisual(string maze_name)
+    public GameObject[] ApplyConstContraVisual(string maze_name)
     {AudioSource audioSource3 = player.GetComponent<AudioSource>(); 
         // Condition 2 - Visual Only
         // Make contra visual walls are off
@@ -659,11 +709,12 @@ public class MazeManager : MonoBehaviour
             }
         }
         print("const_visual_clash");
+        return phantom_mazes;
 
     }        
 
 
-    void ApplyConstContraAudio2(string maze_name)
+    public GameObject[] ApplyConstContraAudio2(string maze_name)
     {AudioSource audioSource3 = player.GetComponent<AudioSource>(); 
         // Condition 2 - Visual Only
         // Make contra visual walls are off
@@ -751,6 +802,9 @@ public class MazeManager : MonoBehaviour
         }
         print("const_audio_clash2");
 
+        return phantom_mazes;
+
+
     }  
     public GameObject[] GetChildGameObjectsWithTag(Transform parent, string tag)
     {
@@ -815,5 +869,17 @@ public class MazeManager : MonoBehaviour
         }
     }
     
+
+        // Called when your trigger event occurs
+    public void TriggerRotationStop()
+    {
+        rotationTriggered = false;
+    }
+
+            // Called when your trigger event occurs
+    public void TriggerRotationStart()
+    {
+        rotationTriggered = true;
+    }
 }
 

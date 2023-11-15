@@ -14,6 +14,7 @@ public class PauseMenu : MonoBehaviour
     public bool isPaused;
     public GameManagerScript gms;
     private TrainingScript ts;
+    private MazeManager mm;
     //private string[] MazeType = GameManagerScript.mazes_name_list;
     //private string[] ConditionType = GameManagerScript.conditions;
 
@@ -25,6 +26,7 @@ public class PauseMenu : MonoBehaviour
         NextLevelCanvas.SetActive(false);
         gms = FindObjectOfType<GameManagerScript>();
         ts = FindObjectOfType<TrainingScript>();
+        mm = FindObjectOfType<MazeManager>();
   
     }
 
@@ -68,6 +70,7 @@ public class PauseMenu : MonoBehaviour
         //string filePath1 = Application.dataPath + "/" + "Data" + "/" + "Mazes" + "-Summary" + ".csv";
         //string logText1 = string.Format("{0},{1},{2},{3},{4}", MazeType[mazeIndex], ConditionType[mazeIndex], collision_number, fail, MazeSolveTime);
        // File.AppendAllText(filePath1, logText1 + Environment.NewLine);
+        mm.TriggerRotationStop();
         if(MainMenu.isTraining)
             {
                 ts.NextMaze();

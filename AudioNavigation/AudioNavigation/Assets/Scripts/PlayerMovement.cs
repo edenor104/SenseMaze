@@ -11,8 +11,8 @@ public class PlayerMovement : MonoBehaviour
 {
     GameManagerScript gms;
     TrainingScript ts;
-    PauseMenu pm;
     MazeManager mm;
+    PauseMenu pm;
     LoggerScript ls;
     public GameObject GameManager;
     public GameObject StartSound;
@@ -92,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
+                    mm.TriggerRotationStop();
                     MazeType = GameManagerScript.mazes_name_list;
                     ConditionType = GameManagerScript.conditions;
                     ls.FailedReachLocation(MazeType, ConditionType, collision_number, MazeSolveTime);
@@ -105,6 +106,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         pm = GameManager.GetComponent<PauseMenu>();
+        mm = Mazes.GetComponent<MazeManager>();
         AudioSource SuccessSound = GameObject.FindWithTag("Logger").GetComponent<AudioSource>();
         if(!MainMenu.isTraining)
         {
@@ -116,7 +118,10 @@ public class PlayerMovement : MonoBehaviour
 
         //AudioClip[] audioClips1 = mm.audioClips;
 
-            if (other.gameObject.CompareTag("Finish")){
+        if (other.gameObject.CompareTag("Finish")){
+            print(mm);
+            //mm.TriggerRotationStop();
+            collision_status = 7;
             GameObject finishObject = GameObject.FindGameObjectWithTag("Finish");
             AudioSource finishSound = finishObject.GetComponentInChildren<AudioSource>();
             /*float startVolume = finishSound.volume;
@@ -144,6 +149,7 @@ public class PlayerMovement : MonoBehaviour
                 else
                 {
                     MazeType = GameManagerScript.mazes_name_list;
+                    int index_maze = GameManagerScript.mazeIndex; 
                     ConditionType = GameManagerScript.conditions;
                     ls.ReachLocation(MazeType, ConditionType, collision_number, MazeSolveTime);
                     SuccessSound.Play();
@@ -156,9 +162,39 @@ public class PlayerMovement : MonoBehaviour
 
             if (other.gameObject.CompareTag("SoundWall"))
             {
-                print(1);
-                collision_number = collision_number + 1;
-                collision_status = 1;
+
+                if((MainMenu.isTraining))
+                {                    
+                    print(1);
+                    collision_number = collision_number + 1;
+                    collision_status = 1;
+                }
+
+                else
+                {
+                    int index_maze = GameManagerScript.mazeIndex;
+                    ConditionType = GameManagerScript.conditions;
+                    if(ConditionType[index_maze] == "const_contra_visual")
+                        {
+                            collision_number = collision_number + 1;
+                            print(2);
+                            collision_status = 2;
+                        }
+                    
+                    /*if(ConditionType[index_maze] == "const_contra_audio2")
+                        {
+                            collision_number = collision_number + 1;
+                            print(3);
+                            collision_status = 3;
+                        }
+                    */
+                    else
+                        {
+                            print(1);
+                            collision_number = collision_number + 1;
+                            collision_status = 1; 
+                        }
+                }
                 //yield return new WaitForSeconds(1f); 
                 audioSource.Play();
             }
@@ -180,13 +216,13 @@ public class PlayerMovement : MonoBehaviour
                 
             }
 
-            if (other.gameObject.CompareTag("GhostWall"))
+            if (other.gameObject.CompareTag("GhostWall") || other.gameObject.CompareTag("PhantomWall"))
             {
                 print(4);
                 collision_status = 4;
             }
 
-            if (other.gameObject.CompareTag("GhostSoundWall"))
+            if (other.gameObject.CompareTag("GhostSoundWall") || other.gameObject.CompareTag("PhantomAudioWall"))
             {
                 print(5);
                 collision_status = 5;

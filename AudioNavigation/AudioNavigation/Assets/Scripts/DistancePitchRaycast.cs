@@ -88,7 +88,7 @@ public class DistancePitchRaycast : MonoBehaviour
         else{
         if (GameManagerScript.mazeIndex != -1)
         {    
-            if (GameManagerScript.conditions[GameManagerScript.mazeIndex] == "visual_only")
+            if (GameManagerScript.conditions[GameManagerScript.mazeIndex] == "visual_only" || GameManagerScript.conditions[GameManagerScript.mazeIndex] == "const_contra_visual_no_audio")
                 {
                 audioSource.volume = 0.0f;
                 if ((hit.distance < triggerColision))
