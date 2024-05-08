@@ -40,7 +40,7 @@ public class MainMenu : MonoBehaviour
         Application.Quit();     
     }
 
-            public void ActivateTrainingMode()
+    public void ActivateTrainingMode()
     {
         isTraining = true;       
         SceneManager.LoadScene("TrainingLevel");
